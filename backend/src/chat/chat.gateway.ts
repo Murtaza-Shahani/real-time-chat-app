@@ -7,7 +7,7 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
-
+import { MessagesService } from '../messages/messages.service';
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
@@ -18,6 +18,7 @@ import { Server, Socket } from 'socket.io';
 export class ChatGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
+  constructor(private messageService: MessagesService) {}
   @WebSocketServer()
   server: Server;
 
@@ -47,23 +48,30 @@ export class ChatGateway
 
   // ✅ Handle message
   @SubscribeMessage('send_message')
-  handleMessage(
-    @MessageBody() data: any,
-    @ConnectedSocket() socket: Socket,
-  ) {
-    const { senderId, receiverId } = data;
+async handleMessage(
+  @MessageBody() data: any,
+  @ConnectedSocket() socket: Socket,
+) {
+  const { senderId, receiverId, text } = data;
 
-    console.log('Message received:', data);
+  console.log('Message received:', data);
 
-    // ✅ Find receiver socket
-    const receiverSocketId = this.users.get(receiverId);
+  // ✅ 1. SAVE TO DB
+  const savedMessage = await this.messageService.createMessage({
+    senderId,
+    receiverId,
+    text,
+  });
 
-    // ✅ Send to receiver ONLY
-    if (receiverSocketId) {
-      this.server.to(receiverSocketId).emit('receive_message', data);
-    }
+  // ✅ 2. FIND RECEIVER
+  const receiverSocketId = this.users.get(receiverId);
 
-    // ✅ Send back to sender (important for UI sync)
-    socket.emit('receive_message', data);
+  // ✅ 3. SEND TO RECEIVER
+  if (receiverSocketId) {
+    this.server.to(receiverSocketId).emit('receive_message', savedMessage);
   }
+
+  // ✅ 4. SEND BACK TO SENDER
+  socket.emit('receive_message', savedMessage);
+}
 }

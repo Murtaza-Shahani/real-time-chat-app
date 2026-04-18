@@ -1,11 +1,12 @@
 //import { Message } from "@/types/message";
 import { io, Socket } from "socket.io-client";
 import { type Message} from  "../types/message";
+const SOCKET_URL = import.meta.env.VITE_API_URL;
 class SocketService {
   private socket: Socket | null = null;
 
   connect(userId: number) {
-    this.socket = io("http://localhost:3000", {
+    this.socket = io(SOCKET_URL, {
       query: { userId },
     });
 
