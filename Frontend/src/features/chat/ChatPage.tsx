@@ -7,7 +7,7 @@ import type { Message } from "../../types/message";
 
 import SocketService from "../../services/sockets";
 import { getConversations, getMessages } from "../../services/messageService";
-
+import { markMessagesAsRead } from "../../services/messageService";
 import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "../../services/userServices";
 
@@ -43,12 +43,6 @@ export default function ChatPage() {
     (u: User) => u.id !== currentUserId
   );
 
-  // ✅ Auto select first user
-  // useEffect(() => {
-  //   if (filteredUsers.length > 0 && !selectedUser) {
-  //     setSelectedUser(filteredUsers[0]);
-  //   }
-  // }, [filteredUsers, selectedUser]); // ✅ FIXED
   
 
   // ✅ Fetch messages
@@ -88,6 +82,46 @@ export default function ChatPage() {
     queryFn:getConversations,
     enabled:!!currentUserId
   })
+
+    //merge users
+  const conversations = conversationsData ?? [];
+
+// users with NO conversation
+const usersWithoutConversation = filteredUsers.filter(
+  (user: User) =>
+    !conversations.some((c) => c.userId === user.id)
+);
+
+// merge both
+const mergedList = [
+  ...conversations,
+  ...usersWithoutConversation.map((user: User) => ({
+    userId: user.id,
+    name: user.name,
+    lastMessage: "",
+    lastMessageTime: "",
+    unreadCount: 0,
+  })),
+];
+//sort
+mergedList.sort((a, b) => {
+  if (!a.lastMessageTime) return 1;
+  if (!b.lastMessageTime) return -1;
+  return (
+    new Date(b.lastMessageTime).getTime() -
+    new Date(a.lastMessageTime).getTime()
+  );
+});
+// ✅ Auto select first user
+  useEffect(() => {
+  if (mergedList.length > 0 && !selectedUser) {
+    setSelectedUser({
+      id: mergedList[0].userId,
+      name: mergedList[0].name,
+      email: "",
+    });
+  }
+}, [mergedList, selectedUser]);
 
   useEffect(() => {
   if (conversationsData.length > 0 && !selectedUser) {
@@ -138,6 +172,16 @@ export default function ChatPage() {
     };
   }, [currentUserId]); // ✅ FIXED
 
+useEffect(() => {
+  if (!selectedUser) return;
+
+  // ✅ mark messages as read in backend
+  markMessagesAsRead(selectedUser.id);
+
+  // ✅ refresh sidebar (removes red badge)
+  refetchConversations();
+}, [selectedUser]);
+
   // ✅ UI states
   if (isLoading) {
     return <div className="p-6">Loading users...</div>;
@@ -154,14 +198,14 @@ export default function ChatPage() {
   return <div className="p-6">Select a conversation</div>;
 }
 
-  if (conversationsData.length === 0) {
-  return <div className="p-6">No conversations yet</div>;
-}
+//   if (conversationsData.length === 0) {
+//   return <div className="p-6">No conversations yet</div>;
+// }
 
   return (
     <div className="h-[calc(100vh-4rem)] w-full flex bg-[#f5f7fb] text-slate-800 overflow-hidden">
       <Sidebar
-  conversations={conversationsData}
+  conversations={mergedList}
   selectedUser={selectedUser}
   onSelectUser={setSelectedUser}
 />

@@ -20,3 +20,16 @@ export const getConversations = async () => {
   });
   return res.data;
 };
+export const markMessagesAsRead = async (otherUserId: number) => {
+  const API_URL = import.meta.env.VITE_API_URL;
+
+  await axios.patch(
+    `${API_URL}/messages/read/${otherUserId}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  );
+};

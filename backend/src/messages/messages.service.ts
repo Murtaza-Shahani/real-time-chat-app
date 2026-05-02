@@ -76,4 +76,16 @@ export class MessagesService {
 
   return Array.from(map.values());
 }
+async markAsRead(currentUserId: number, otherUserId: number) {
+  return this.prisma.message.updateMany({
+    where: {
+      senderId: otherUserId,
+      receiverId: currentUserId,
+      isRead: false,
+    },
+    data: {
+      isRead: true,
+    },
+  });
+}
 }

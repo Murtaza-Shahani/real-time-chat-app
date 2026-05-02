@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { GetUser } from 'src/common/decorator/get-user.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth/jwt-auth.guard';
@@ -31,5 +31,16 @@ export class MessagesController {
       Number(otherUserId),
     );
   }
+
+  @Patch('read/:otherUserId')
+markAsRead(
+  @Param('otherUserId') otherUserId: string,
+  @GetUser() user: any,
+) {
+  return this.messagesService.markAsRead(
+    user.userId,
+    Number(otherUserId),
+  );
+}
  
 }
