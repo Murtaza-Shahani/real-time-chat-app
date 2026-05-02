@@ -6,7 +6,7 @@ import type { User } from "../../types/users.type";
 import type { Message } from "../../types/message";
 
 import SocketService from "../../services/sockets";
-import { getMessages } from "../../services/messageService";
+import { getConversations, getMessages } from "../../services/messageService";
 
 import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "../../services/userServices";
@@ -44,11 +44,12 @@ export default function ChatPage() {
   );
 
   // ✅ Auto select first user
-  useEffect(() => {
-    if (filteredUsers.length > 0 && !selectedUser) {
-      setSelectedUser(filteredUsers[0]);
-    }
-  }, [filteredUsers, selectedUser]); // ✅ FIXED
+  // useEffect(() => {
+  //   if (filteredUsers.length > 0 && !selectedUser) {
+  //     setSelectedUser(filteredUsers[0]);
+  //   }
+  // }, [filteredUsers, selectedUser]); // ✅ FIXED
+  
 
   // ✅ Fetch messages
   const {
@@ -57,7 +58,7 @@ export default function ChatPage() {
   } = useQuery({
     queryKey: ["messages", selectedUser?.id],
     queryFn: () =>
-      getMessages(currentUserId!, selectedUser!.id),
+      getMessages( selectedUser!.id),
     enabled: !!selectedUser && !!currentUserId,
   });
 
@@ -79,7 +80,24 @@ export default function ChatPage() {
       refetch();
     }
   }, [selectedUser]);
+ 
 
+  //fetch all msgs 
+  const {data:conversationsData=[], refetch:refetchConversations} = useQuery({
+    queryKey:["conversations"],
+    queryFn:getConversations,
+    enabled:!!currentUserId
+  })
+
+  useEffect(() => {
+  if (conversationsData.length > 0 && !selectedUser) {
+    setSelectedUser({
+      id: conversationsData[0].userId,
+      name: conversationsData[0].name,
+      email: "",
+    });
+  }
+}, [conversationsData, selectedUser]);
   // ✅ Send message
   const sendMessage = (text: string) => {
     if (!selectedUser || !currentUserId) return;
@@ -111,6 +129,8 @@ export default function ChatPage() {
         ...prev,
         [otherUser]: [...(prev[otherUser] || []), msg],
       }));
+      // Refetch conversations to update last message & unread count
+      refetchConversations();
     });
 
     return () => {
@@ -130,18 +150,21 @@ export default function ChatPage() {
       </div>
     );
   }
-
   if (!selectedUser) {
-    return <div className="p-6">No users available</div>;
-  }
+  return <div className="p-6">Select a conversation</div>;
+}
+
+  if (conversationsData.length === 0) {
+  return <div className="p-6">No conversations yet</div>;
+}
 
   return (
-    <div className="h-screen w-full flex bg-[#f5f7fb] text-slate-800 overflow-hidden">
+    <div className="h-[calc(100vh-4rem)] w-full flex bg-[#f5f7fb] text-slate-800 overflow-hidden">
       <Sidebar
-        users={filteredUsers}
-        selectedUser={selectedUser}
-        onSelectUser={setSelectedUser}
-      />
+  conversations={conversationsData}
+  selectedUser={selectedUser}
+  onSelectUser={setSelectedUser}
+/>
 
       <MessageArea
         selectedUser={selectedUser}

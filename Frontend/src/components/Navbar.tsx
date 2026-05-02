@@ -17,7 +17,7 @@ export default function Navbar() {
       .slice(0, 2);
 
   return (
-    <nav className="h-16 bg-gray-950 border-b border-white/10 flex items-center justify-between px-6 shadow-lg shadow-black/30">
+    <nav className="h-16 bg-gray-950 border-b border-white/10 flex items-center justify-between px-6 shadow-lg shadow-black/30 sticky top-0 z-50">
       {/* Logo */}
       <div className="flex items-center gap-2.5">
         <div className="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">

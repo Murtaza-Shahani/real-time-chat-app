@@ -25,7 +25,7 @@ export default function MessageArea({ selectedUser, messages, sendMessage, curre
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full">
+    <div className="flex-1 flex flex-col h-full overflow-hidden">
 
       {/* Header */}
       <div className="h-16 bg-white border-b flex items-center px-6">

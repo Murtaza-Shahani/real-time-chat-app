@@ -16,7 +16,7 @@ function App() {
         <Navbar />
 
         {/* ✅ Main Content */}
-        <div className="flex-1">
+        <div className="flex-1 overflow-hidden">
           <Routes>
 
             {/* 🔓 Public Route */}
