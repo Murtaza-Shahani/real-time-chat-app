@@ -203,7 +203,7 @@ useEffect(() => {
 // }
 
   return (
-    <div className="h-[calc(100vh-4rem)] w-full flex bg-[#f5f7fb] text-slate-800 overflow-hidden">
+    <div className="h-[calc(100vh-4rem)] w-full flex bg-[#0B141A] text-slate-800 overflow-hidden">
       <Sidebar
   conversations={mergedList}
   selectedUser={selectedUser}

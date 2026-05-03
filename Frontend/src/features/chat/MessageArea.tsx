@@ -28,7 +28,7 @@ export default function MessageArea({ selectedUser, messages, sendMessage, curre
     <div className="flex-1 flex flex-col h-full overflow-hidden">
 
       {/* Header */}
-      <div className="h-16 bg-white border-b flex items-center px-6">
+      <div className="h-16 bg-[#202C33] border-b border-[#222E35] flex items-center px-6">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center">
             {selectedUser.name.charAt(0)}
@@ -43,14 +43,14 @@ export default function MessageArea({ selectedUser, messages, sendMessage, curre
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-[#f5f7fb]">
+      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-[#0B141A]">
         {messages.map((msg) => (
           <div
             key={msg.id}
             className={`flex ${msg.senderId === currentUserId ? "justify-end" : "justify-start"}`}
           >
             <div className={`px-4 py-2 rounded-xl max-w-xs text-sm ${
-              msg.senderId === currentUserId ? "bg-blue-600 text-white" : "bg-white border"
+              msg.senderId === currentUserId ? "bg-[#005C4B] text-white" : "bg-[#202C33] text-[#E9EDEF]"
             }`}>
               {msg.text}
               <div className="text-xs opacity-70 text-right mt-1">
@@ -63,17 +63,17 @@ export default function MessageArea({ selectedUser, messages, sendMessage, curre
       </div>
 
       {/* Input */}
-      <div className="h-20 bg-white border-t flex items-center px-6 gap-3">
+      <div className="h-20 bg-[#202C33] border-t border-[#222E35] flex items-center px-6 gap-3">
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
           placeholder="Type a message..."
-          className="flex-1 bg-slate-100 rounded-full px-5 py-3 text-sm focus:outline-none"
+          className="flex-1 bg-[#2A3942] text-white rounded-full px-5 py-3 text-sm focus:outline-none"
         />
         <button
           onClick={handleSend}
-          className="bg-blue-600 text-white px-6 py-2.5 rounded-full hover:bg-blue-700 transition font-medium"
+          className="bg-[#00A884] hover:bg-[#019874] text-white px-6 py-2.5 rounded-full hover:bg-blue-700 transition font-medium"
         >
           Send
         </button>

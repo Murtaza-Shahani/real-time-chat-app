@@ -35,10 +35,10 @@ export default function Sidebar({
 
 
   return (
-    <div className="w-80 bg-white border-r border-slate-200 flex flex-col h-full">
+    <div className="w-80 bg-[#111B21] border-r border-[#222E35] flex flex-col h-full">
 
-      <div className="px-6 py-5 border-b border-slate-200">
-        <h1 className="text-xl font-semibold">Messages</h1>
+      <div className="px-6 py-5 border-b border-[#222E35] bg-[#202C33]">
+        <h1 className="text-xl text-white font-semibold">Messages</h1>
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -58,28 +58,28 @@ export default function Sidebar({
       className={`flex items-center justify-between px-6 py-4 cursor-pointer
       ${
         isActive
-          ? "bg-blue-50 border-r-4 border-blue-500"
-          : "hover:bg-slate-100"
+  ? "bg-[#2A3942]"
+  : "hover:bg-[#202C33]"
       }`}
     >
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center">
+        <div className="w-10 h-10 rounded-full bg-[#005C4B] text-white flex items-center justify-center">
           {convo.name.charAt(0)}
         </div>
 
         <div>
-          <p className={`font-medium ${convo.unreadCount > 0 ? "font-bold" : ""}`}>
+          <p className={`font-medium text-white ${convo.unreadCount > 0 ? "font-bold" : ""}`}>
             {convo.name}
           </p>
 
-          <p className="text-xs text-slate-500 truncate max-w-[150px]">
+          <p className="text-xs text-white truncate max-w-[150px]">
             {convo.lastMessage}
           </p>
         </div>
       </div>
 
       {convo.unreadCount > 0 && (
-        <div className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+        <div className="bg-[#25D366] text-white text-xs px-2 py-1 rounded-full">
           {convo.unreadCount}
         </div>
       )}
