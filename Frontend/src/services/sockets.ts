@@ -31,6 +31,9 @@ class SocketService {
   onMessage(callback: (msg: Message) => void) {
     this.socket?.on("receive_message", callback);
   }
+  onOnlineUsers(callback: (userIds: number[]) => void) {
+    this.socket?.on("online_users", callback);
+  }
 }
 
 export default new SocketService();

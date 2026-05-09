@@ -6,10 +6,10 @@ type Props = {
   messages: Message[];
   sendMessage: (text: string) => void;
   currentUserId: number;
-
+ isOnline: boolean;
 };
 
-export default function MessageArea({ selectedUser, messages, sendMessage, currentUserId }: Props) {
+export default function MessageArea({ selectedUser, messages, sendMessage, currentUserId, isOnline }: Props) {
   const [text, setText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -35,9 +35,13 @@ export default function MessageArea({ selectedUser, messages, sendMessage, curre
           </div>
           <div>
             <p className="font-semibold">{selectedUser.name}</p>
-            <p className="text-xs text-green-500">
-              {selectedUser.online ? "Online" : "Offline"}
-            </p>
+            <p
+  className={`text-xs mb-5 ${
+    isOnline ? "text-green-500" : "text-gray-400"
+  }`}
+>
+  {isOnline ? "Online" : "Offline"}
+</p>
           </div>
         </div>
       </div>

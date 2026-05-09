@@ -32,6 +32,12 @@ export class ChatGateway
     if (userId) {
       this.users.set(userId, socket.id);
       console.log(`User ${userId} connected with socket ${socket.id}`);
+      //send online status to all users
+      this.server.emit("online_users", [...this.users.keys()]);
+      //notify everyone that user is online
+      this.server.emit('user_online', userId);
+      
+
     }
   }
 
@@ -41,6 +47,8 @@ export class ChatGateway
       if (sockId === socket.id) {
         this.users.delete(userId);
         console.log(`User ${userId} disconnected`);
+        //notify everyone user went offline
+        this.server.emit('user_offline',userId);
         break;
       }
     }
@@ -74,4 +82,10 @@ async handleMessage(
   // ✅ 4. SEND BACK TO SENDER
   socket.emit('receive_message', savedMessage);
 }
+private broadcastOnlineUsers() {
+  const onlineUsers = Array.from(this.users.keys());
+
+  this.server.emit("online_users", onlineUsers);
+}
+
 }

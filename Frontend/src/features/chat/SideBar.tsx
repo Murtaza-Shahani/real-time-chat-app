@@ -19,13 +19,14 @@ type SidebarProps = {
   conversations: Conversation[];
   selectedUser: User;
   onSelectUser: (user: User) => void;
+  onlineUsers:number[],
 };
 
 export default function Sidebar({
   conversations,
   selectedUser,
   onSelectUser,
-  
+  onlineUsers,
 }: SidebarProps) {
     // const { data: users, isLoading, isError } = useUsers();
 
@@ -44,6 +45,7 @@ export default function Sidebar({
       <div className="flex-1 overflow-y-auto">
 {conversations.map((convo) => {
   const isActive = selectedUser.id === convo.userId;
+  const isOnline = onlineUsers.includes(convo.userId);
 
   return (
     <div
@@ -63,8 +65,15 @@ export default function Sidebar({
       }`}
     >
       <div className="flex items-center gap-3">
+        <div className='relative'> 
+
+        
         <div className="w-10 h-10 rounded-full bg-[#005C4B] text-white flex items-center justify-center">
           {convo.name.charAt(0)}
+        </div>
+        {isOnline && (
+          <div className= 'absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-[#111B21]'></div>
+        )}
         </div>
 
         <div>

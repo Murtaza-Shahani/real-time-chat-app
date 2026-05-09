@@ -21,7 +21,8 @@ export default function ChatPage() {
   const currentUserId = currentUser?.id;
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-
+//online users
+const [onlineUsers, setOnlineUsers] = useState<number[]>([])
   const [messagesByUser, setMessagesByUser] = useState<
     Record<number, Message[]>
   >({});
@@ -166,6 +167,9 @@ mergedList.sort((a, b) => {
       // Refetch conversations to update last message & unread count
       refetchConversations();
     });
+    SocketService.onOnlineUsers((users)=>{
+      setOnlineUsers(users)
+    })
 
     return () => {
       SocketService.disconnect();
@@ -208,6 +212,7 @@ useEffect(() => {
   conversations={mergedList}
   selectedUser={selectedUser}
   onSelectUser={setSelectedUser}
+  onlineUsers={onlineUsers}
 />
 
       <MessageArea
@@ -215,6 +220,7 @@ useEffect(() => {
         messages={messagesByUser[selectedUser.id] || []}
         sendMessage={sendMessage}
         currentUserId={currentUserId!}
+         isOnline={onlineUsers.includes(selectedUser.id)}
       />
     </div>
   );
