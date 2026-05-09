@@ -82,10 +82,34 @@ async handleMessage(
   // ✅ 4. SEND BACK TO SENDER
   socket.emit('receive_message', savedMessage);
 }
-private broadcastOnlineUsers() {
-  const onlineUsers = Array.from(this.users.keys());
+@SubscribeMessage('typing')
+handleTyping(@MessageBody() data: any) {
+  const { senderId, receiverId } = data;
 
-  this.server.emit("online_users", onlineUsers);
+  const receiverSocketId = this.users.get(receiverId);
+
+  if (receiverSocketId) {
+    this.server.to(receiverSocketId).emit('user_typing', {
+      senderId,
+    });
+  }
 }
+@SubscribeMessage('stop_typing')
+handleStopTyping(@MessageBody() data: any) {
+  const { senderId, receiverId } = data;
+
+  const receiverSocketId = this.users.get(receiverId);
+
+  if (receiverSocketId) {
+    this.server.to(receiverSocketId).emit('user_stop_typing', {
+      senderId,
+    });
+  }
+}
+// private broadcastOnlineUsers() {
+//   const onlineUsers = Array.from(this.users.keys());
+
+//   this.server.emit("online_users", onlineUsers);
+// }
 
 }
