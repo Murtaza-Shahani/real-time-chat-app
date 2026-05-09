@@ -44,7 +44,9 @@ export default function MessageArea({ selectedUser, messages, sendMessage, curre
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-[#0B141A]">
-        {messages.map((msg) => (
+        
+        {messages.length > 0 ? (
+        messages.map((msg) => (
           <div
             key={msg.id}
             className={`flex ${msg.senderId === currentUserId ? "justify-end" : "justify-start"}`}
@@ -58,7 +60,14 @@ export default function MessageArea({ selectedUser, messages, sendMessage, curre
               </div>
             </div>
           </div>
-        ))}
+        ))
+      ) : (
+          <div className="flex items-center justify-center h-full text-gray-500">
+            No messages yet. Start the conversation!
+          </div>
+
+
+        )}
         <div ref={messagesEndRef} />
       </div>
 
@@ -73,7 +82,7 @@ export default function MessageArea({ selectedUser, messages, sendMessage, curre
         />
         <button
           onClick={handleSend}
-          className="bg-[#00A884] hover:bg-[#019874] text-white px-6 py-2.5 rounded-full hover:bg-blue-700 transition font-medium"
+          className="bg-[#00A884] hover:bg-[#019874] text-white px-6 py-2.5 rounded-full transition font-medium"
         >
           Send
         </button>

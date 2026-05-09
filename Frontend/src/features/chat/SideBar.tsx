@@ -73,7 +73,8 @@ export default function Sidebar({
           </p>
 
           <p className="text-xs text-white truncate max-w-[150px]">
-            {convo.lastMessage}
+            {/* {convo.lastMessage || "Start a new conversation!"} */}
+            {convo.lastMessage? convo.lastMessage: "Start a new Conversation!"}
           </p>
         </div>
       </div>
