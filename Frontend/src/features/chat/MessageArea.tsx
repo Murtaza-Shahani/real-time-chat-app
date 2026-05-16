@@ -7,12 +7,13 @@ type Props = {
   sendMessage: (text: string) => void;
   currentUserId: number;
  isOnline: boolean;
+ isTyping: boolean;
 };
 
-export default function MessageArea({ selectedUser, messages, sendMessage, currentUserId, isOnline }: Props) {
+export default function MessageArea({ selectedUser, messages, sendMessage, currentUserId, isOnline, isTyping }: Props) {
   const [text, setText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
+const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Auto scroll to bottom on new message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -35,12 +36,20 @@ export default function MessageArea({ selectedUser, messages, sendMessage, curre
           </div>
           <div>
             <p className="font-semibold">{selectedUser.name}</p>
-            <p
+  <p
   className={`text-xs mb-5 ${
-    isOnline ? "text-green-500" : "text-gray-400"
+    isTyping
+      ? "text-green-400"
+      : isOnline
+      ? "text-green-500"
+      : "text-gray-400"
   }`}
 >
-  {isOnline ? "Online" : "Offline"}
+  {isTyping
+    ? "Typing..."
+    : isOnline
+    ? "Online"
+    : "Offline"}
 </p>
           </div>
         </div>
@@ -79,7 +88,31 @@ export default function MessageArea({ selectedUser, messages, sendMessage, curre
       <div className="h-20 bg-[#202C33] border-t border-[#222E35] flex items-center px-6 gap-3">
         <input
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => {
+  setText(e.target.value);
+
+  window.dispatchEvent(
+    new CustomEvent("typing", {
+      detail: {
+        receiverId: selectedUser.id,
+      },
+    })
+  );
+
+  if (typingTimeoutRef.current) {
+    clearTimeout(typingTimeoutRef.current);
+  }
+
+  typingTimeoutRef.current = setTimeout(() => {
+    window.dispatchEvent(
+      new CustomEvent("stop_typing", {
+        detail: {
+          receiverId: selectedUser.id,
+        },
+      })
+    );
+  }, 1000);
+}}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
           placeholder="Type a message..."
           className="flex-1 bg-[#2A3942] text-white rounded-full px-5 py-3 text-sm focus:outline-none"

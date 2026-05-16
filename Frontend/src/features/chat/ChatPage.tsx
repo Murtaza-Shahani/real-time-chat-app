@@ -27,6 +27,9 @@ const [onlineUsers, setOnlineUsers] = useState<number[]>([])
     Record<number, Message[]>
   >({});
 
+  //typig state 
+  const [typingUsers, setTypingUsers] = useState<Record<number, boolean>>({});
+
   // ✅ Fetch users
   const {
     data: usersData,
@@ -170,8 +173,39 @@ mergedList.sort((a, b) => {
     SocketService.onOnlineUsers((users)=>{
       setOnlineUsers(users)
     })
+// When a user starts typing, we can set their typing status to true
+SocketService.onTyping(({ senderId }) => {
+  setTypingUsers((prev) => ({
+    ...prev,
+    [senderId]: true,
+  }));
+});
+// When a user stops typing, we can set their typing status to false
+SocketService.onStopTyping(({ senderId }) => {
+  setTypingUsers((prev) => ({
+    ...prev,
+    [senderId]: false,
+  }));
+});
+ const handleTyping = (e: any) => {
+  SocketService.sendTyping(
+    currentUserId!,
+    e.detail.receiverId
+  );
+};
 
+const handleStopTyping = (e: any) => {
+  SocketService.sendStopTyping(
+    currentUserId!,
+    e.detail.receiverId
+  );
+};
+
+window.addEventListener("typing", handleTyping);
+window.addEventListener("stop_typing", handleStopTyping);
     return () => {
+      window.removeEventListener("typing", handleTyping);
+  window.removeEventListener("stop_typing", handleStopTyping);
       SocketService.disconnect();
     };
   }, [currentUserId]); // ✅ FIXED
@@ -213,6 +247,7 @@ useEffect(() => {
   selectedUser={selectedUser}
   onSelectUser={setSelectedUser}
   onlineUsers={onlineUsers}
+  typingUsers={typingUsers}
 />
 
       <MessageArea
@@ -221,6 +256,7 @@ useEffect(() => {
         sendMessage={sendMessage}
         currentUserId={currentUserId!}
          isOnline={onlineUsers.includes(selectedUser.id)}
+         isTyping={typingUsers[selectedUser.id]}
       />
     </div>
   );

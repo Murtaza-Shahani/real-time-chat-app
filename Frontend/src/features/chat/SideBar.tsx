@@ -20,6 +20,7 @@ type SidebarProps = {
   selectedUser: User;
   onSelectUser: (user: User) => void;
   onlineUsers:number[],
+  typingUsers: Record<number, boolean>;
 };
 
 export default function Sidebar({
@@ -27,6 +28,7 @@ export default function Sidebar({
   selectedUser,
   onSelectUser,
   onlineUsers,
+  typingUsers
 }: SidebarProps) {
     // const { data: users, isLoading, isError } = useUsers();
 
@@ -83,7 +85,11 @@ export default function Sidebar({
 
           <p className="text-xs text-white truncate max-w-[150px]">
             {/* {convo.lastMessage || "Start a new conversation!"} */}
-            {convo.lastMessage? convo.lastMessage: "Start a new Conversation!"}
+          {typingUsers[convo.userId]
+  ? "Typing..."
+  : convo.lastMessage
+  ? convo.lastMessage
+  : "Start a new Conversation!"}
           </p>
         </div>
       </div>

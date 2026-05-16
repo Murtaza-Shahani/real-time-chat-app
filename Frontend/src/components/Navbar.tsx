@@ -1,7 +1,9 @@
+import logo from "../assets/ByteTalk.png";
+import { useNavigate } from "react-router-dom";
 export default function Navbar() {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "null");
-
+  const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -19,8 +21,8 @@ export default function Navbar() {
   return (
     <nav className="h-16 bg-[#111B21] border-b border-[#222E35] flex items-center justify-between px-6  sticky ">
       {/* Logo */}
-      <div className="flex items-center gap-2.5">
-        <div className="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+      <div className="flex items-center gap-2.5 cursor-pointer" onClick={()=> navigate('/')}>
+        {/* <div className="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
           <svg
             className="w-4 h-4 text-white"
             fill="none"
@@ -34,13 +36,18 @@ export default function Navbar() {
               d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
             />
           </svg>
+        </div> */}
+        <div className="flex items-center" >
+          <img src = {logo} alt="ByteTalk" className="w-22 h-22 object-contain rounded-md shadow-lg "/>
+          
         </div>
-        <span
+        {/* <span
           className="text-white font-bold text-lg tracking-tight"
           style={{ fontFamily: "'Sora', sans-serif" }}
         >
-          Chat<span className="text-indigo-400">App</span>
-        </span>
+          ByteTalk  
+       
+        </span> */}
       </div>
 
       {/* Right side */}

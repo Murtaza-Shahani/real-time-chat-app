@@ -27,13 +27,35 @@ class SocketService {
   sendMessage(message: Message) {
     this.socket?.emit("send_message", message);
   }
+   sendTyping(senderId: number, receiverId: number) {
+  this.socket?.emit("typing", {
+    senderId,
+    receiverId,
+  });
+}
+
+sendStopTyping(senderId: number, receiverId: number) {
+  this.socket?.emit("stop_typing", {
+    senderId,
+    receiverId,
+  });
+}
 
   onMessage(callback: (msg: Message) => void) {
     this.socket?.on("receive_message", callback);
   }
+  onTyping(callback: (data: any) => void) {
+  this.socket?.on("user_typing", callback);
+}
+
+onStopTyping(callback: (data: any) => void) {
+  this.socket?.on("user_stop_typing", callback);
+}
   onOnlineUsers(callback: (userIds: number[]) => void) {
     this.socket?.on("online_users", callback);
   }
+
+ 
 }
 
 export default new SocketService();
