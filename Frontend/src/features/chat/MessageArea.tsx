@@ -68,8 +68,25 @@ const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
               msg.senderId === currentUserId ? "bg-[#005C4B] text-white" : "bg-[#202C33] text-[#E9EDEF]"
             }`}>
               {msg.text}
-              <div className="text-xs opacity-70 text-right mt-1">
+              <div className="text-xs opacity-70 text-right mt-1 flex items-center justify-end gap-1">
+                <span>
+                  
+                
                 {new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}
+              </span>
+              {
+                msg.senderId=== currentUserId &&(
+                  <span className={
+                    `text-xs ${
+                      msg.isRead? 'text-sky-400':"text-gray-300"
+                    }`
+                  }>
+                    
+                     {msg.isRead ? "✓✓" : "✓"}
+                    
+                  </span>
+                )
+              }
               </div>
             </div>
           </div>

@@ -4,4 +4,5 @@ export type Message = {
   receiverId: number;    // for backend later
   text: string;
   createdAt: string;     // ISO string
+  isRead:boolean;
 };
