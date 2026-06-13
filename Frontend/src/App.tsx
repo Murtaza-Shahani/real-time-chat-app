@@ -4,10 +4,11 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ChatPage from './features/chat/ChatPage';
 import AuthPage from './pages/AuthPage';
 import Navbar from './components/Navbar';
+import { getAccessToken } from './services/auth';
 
 function App() {
-  const token = localStorage.getItem("token");
-
+  const token = getAccessToken();
+  console.log("App loaded, token:", token);
   return (
     <BrowserRouter>
       <div className="h-screen flex flex-col">

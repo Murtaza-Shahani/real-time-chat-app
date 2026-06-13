@@ -1,11 +1,13 @@
 import logo from "../assets/ByteTalk.png";
 import { useNavigate } from "react-router-dom";
+import { getAccessToken } from "../services/auth";
 export default function Navbar() {
-  const token = localStorage.getItem("token");
+  const token = getAccessToken();
+  console.log("Navbar token:", token); // Debugging line
   const user = JSON.parse(localStorage.getItem("user") || "null");
   const navigate = useNavigate();
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("access_token");
     localStorage.removeItem("user");
     window.location.href = "/auth";
   };

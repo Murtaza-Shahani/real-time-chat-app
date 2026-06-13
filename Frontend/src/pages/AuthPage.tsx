@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { login, signup } from "../services/auth.service";
-
+import { setAccessToken } from "../services/auth";
+import { useNavigate } from "react-router-dom";
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     name: "",
@@ -14,9 +16,12 @@ export default function AuthPage() {
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      localStorage.setItem("token", data.access_token);
+      // localStorage.setItem("token", data.access_token);
+      // localStorage.setItem("user", JSON.stringify(data.user));
+      setAccessToken(data.access_token);
       localStorage.setItem("user", JSON.stringify(data.user));
-      window.location.href = "/";
+      console.log("Login successful, token stored:", data.access_token);
+      navigate("/");
     },
   });
 

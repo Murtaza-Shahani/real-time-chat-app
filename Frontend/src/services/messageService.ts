@@ -1,35 +1,15 @@
-import axios from "axios";
+import api from "./api";
 
-export const getMessages = async ( otherUserId: number) => {
-  const API_URL = import.meta.env.VITE_API_URL;
-  const res = await axios.get(
-    `${API_URL}/messages/${otherUserId}`, {
-      headers:{
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      }
-    }
-  );
+export const getMessages = async (otherUserId: number) => {
+  const res = await api.get(`/messages/${otherUserId}`);
   return res.data;
 };
+
 export const getConversations = async () => {
-  const API_URL = import.meta.env.VITE_API_URL;
-  const res = await axios.get(`${API_URL}/messages/conversations`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+  const res = await api.get(`/messages/conversations`);
   return res.data;
 };
-export const markMessagesAsRead = async (otherUserId: number) => {
-  const API_URL = import.meta.env.VITE_API_URL;
 
-  await axios.patch(
-    `${API_URL}/messages/read/${otherUserId}`,
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }
-  );
+export const markMessagesAsRead = async (otherUserId: number) => {
+  await api.patch(`/messages/read/${otherUserId}`, {});
 };
